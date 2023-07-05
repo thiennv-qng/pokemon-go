@@ -59,6 +59,11 @@ func main() {
 	// Get method
 	r.GET("/", get)
 
+	// Get method
+	r.GET("/hello", func(c *gin.Context) {
+		c.JSON(http.StatusOK, "Hello World")
+	})
+
 	// Post method
 	r.POST("/", create)
 
