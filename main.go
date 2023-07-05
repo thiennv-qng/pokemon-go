@@ -11,7 +11,7 @@ type Pokemon struct {
 	ID      string `json:"id"`
 	Name    string `json:"name"`
 	Email   string `json:"email"`
-	Content string `json:"content"`
+	Message string `json:"message"`
 }
 
 var pokemon []Pokemon
@@ -53,6 +53,20 @@ func update(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"error": "Pokemon not found"})
 }
 
+func delete(c *gin.Context) {
+	id := c.Param("id")
+
+	for i, pk := range pokemon {
+		if pk.ID == id {
+			pokemon = append(pokemon[:i], pokemon[i+1:]...)
+			c.JSON(http.StatusOK, gin.H{"message": "Deleted pokemon successfully"})
+			return
+		}
+	}
+
+	c.JSON(http.StatusNotFound, gin.H{"error": "Pokemon not found"})
+}
+
 func main() {
 	r := gin.Default()
 
@@ -71,13 +85,7 @@ func main() {
 	r.PUT("/:id", update)
 
 	// Delete method
-	r.DELETE("/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		c.JSON(200, gin.H{
-			"message": "Hello World",
-			"id":      id,
-		})
-	})
+	r.DELETE("/:id", delete)
 
 	r.Run(":8080")
 }
